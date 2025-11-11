@@ -1,6 +1,6 @@
 package comtax.gov.webapp.controller;
 
-//import comtax.gov.webapp.filter.LoginRateLimitFilter;
+import comtax.gov.webapp.filter.LoginRateLimitFilter;
 import comtax.gov.webapp.model.ApiResponse;
 import comtax.gov.webapp.model.AuthRequest;
 import comtax.gov.webapp.model.AuthResponse;
@@ -20,7 +20,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ public class AuthenticationController {
 	private final JwtService jwtService;
 	private final AuthServiceDetails authServiceDetails;
 	private final AuthService authService;
-//	private final LoginRateLimitFilter loginRateLimitFilter;
+	private final LoginRateLimitFilter loginRateLimitFilter;
 
 	// ------------------ LOGIN ------------------
 	@PostMapping("/login")
@@ -52,8 +51,8 @@ public class AuthenticationController {
 			AuthResponse authResponse = authService.generateAuthResponse(userDetails, response);
 
 			// Reset failed login attempts for IP
-//			String clientIp = getClientIp(httpRequest);
-//			loginRateLimitFilter.resetAttempts(clientIp);
+			String clientIp = getClientIp(httpRequest);
+			loginRateLimitFilter.resetAttempts(clientIp);
 
 			return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Login successful", authResponse));
 
@@ -118,11 +117,11 @@ public class AuthenticationController {
 		return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Logout successful", body));
 	}
 
-//	private String getClientIp(HttpServletRequest request) {
-//		String xfHeader = request.getHeader("X-Forwarded-For");
-//		if (xfHeader != null && !xfHeader.isBlank()) {
-//			return xfHeader.split(",")[0].trim();
-//		}
-//		return request.getRemoteAddr();
-//	}
+	private String getClientIp(HttpServletRequest request) {
+		String xfHeader = request.getHeader("X-Forwarded-For");
+		if (xfHeader != null && !xfHeader.isBlank()) {
+			return xfHeader.split(",")[0].trim();
+		}
+		return request.getRemoteAddr();
+	}
 }

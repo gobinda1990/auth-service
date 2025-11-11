@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class LoginRateLimitFilter extends OncePerRequestFilter {
 
-	private static final int MAX_ATTEMPTS = 5;
-	private static final Duration WINDOW = Duration.ofMinutes(15);
+	private static final int MAX_ATTEMPTS = 10;
+	private static final Duration WINDOW = Duration.ofMinutes(1);
 
 	private final RedisTemplate<String, Attempt> redisTemplate;
 

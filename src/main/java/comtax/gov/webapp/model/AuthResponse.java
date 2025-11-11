@@ -12,14 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class AuthResponse {
+public class AuthResponse {	
 	
-	private String userId;
-	private String userNm;
 	private String hrmsCd;
 	private String circleCd;
 	private String chargeCd;
 	private String emailId;
+	private String phoneNo;	
+    private String gpfNo;
+    private String panNo;
+    private String boId;
 	private Set<String> roles;
     private String accessToken;
     private int expiresIn; // access token expiry in seconds

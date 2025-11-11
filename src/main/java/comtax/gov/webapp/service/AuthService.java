@@ -20,11 +20,12 @@ public class AuthService {
 
         // Set refresh token cookie only (secure attributes enabled)
         CookieUtil.addCookie(response, "refresh_token", refreshToken,
-                (int) (jwtService.getRefreshExpiration() / 1000), true, true, "Strict", null);
+                (int) (jwtService.getRefreshExpiration() / 1000), true, false, "Strict", null);
 
         // Return AuthResponse with access token in body (not stored in cookie)
-        return new AuthResponse(userDetails.getUserCode(), userDetails.getUsername(), userDetails.getHrmsCode(),
-                userDetails.getCircleCode(), userDetails.getChargeCode(), userDetails.getEmail(),
+        return new AuthResponse(userDetails.getHrmsCode(),
+                userDetails.getCircleCd(), userDetails.getChargeCd(), userDetails.getEmail(),
+                userDetails.getPhoneNo(),userDetails.getGpfNo(),userDetails.getPanNo(),userDetails.getBoId(),
                 userDetails.getAuthorities().stream().map(auth -> auth.getAuthority().replace("ROLE_", ""))
                         .collect(Collectors.toSet()),
                 accessToken, (int) (jwtService.getAccessExpiration() / 1000));
