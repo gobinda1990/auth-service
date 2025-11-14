@@ -25,7 +25,7 @@ public class AuthServiceDetails implements UserDetailsService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private static final String USER_CACHE_PREFIX = "user_auth:";
-    private static final long CACHE_TTL_MINUTES = 10;
+    private static final long CACHE_TTL_MINUTES = 30;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

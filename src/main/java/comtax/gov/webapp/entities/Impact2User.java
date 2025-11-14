@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "impact2_user")
+@Table(name = "impact2_user_master")
 @Getter
 @Setter
 public class Impact2User {
@@ -63,8 +63,8 @@ public class Impact2User {
     @Column(name = "bo_id", length = 30)
     private String boId;
 
-    @Column(name = "log_dt")
-    private LocalDateTime logDt;
+//    @Column(name = "log_dt")
+//    private LocalDateTime logDt;
     
  // 🔹 Many-to-Many relationship with roles
     @ManyToMany

@@ -2,7 +2,6 @@ package comtax.gov.webapp.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import comtax.gov.webapp.entities.Impact2User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,13 +39,12 @@ public class CustomUserDetails implements UserDetails, Serializable {
     private LocalDate dtOfJoin;
     private String panNo;
     private String boId;
-    private LocalDateTime logDt;
+//    private LocalDateTime logDt;
 
     private List<String> roles;
 
     public CustomUserDetails() {}
-
-    // ✅ Constructor that accepts Impact2User (fixes your error)
+   
     public CustomUserDetails(Impact2User user) {
         this.hrmsCode = user.getHrmsCode();
         this.passwd = user.getPasswd();
@@ -64,7 +62,7 @@ public class CustomUserDetails implements UserDetails, Serializable {
         this.dtOfJoin = user.getDtOfJoin();
         this.panNo = user.getPanNo();
         this.boId = user.getBoId();
-        this.logDt = user.getLogDt();
+//        this.logDt = user.getLogDt();
         this.roles = user.getRoles() != null
                 ? user.getRoles().stream().map(r -> r.getRoleName()).collect(Collectors.toList())
                 : List.of();
@@ -128,6 +126,6 @@ public class CustomUserDetails implements UserDetails, Serializable {
     public LocalDate getDtOfJoin() { return dtOfJoin; }
     public String getPanNo() { return panNo; }
     public String getBoId() { return boId; }
-    public LocalDateTime getLogDt() { return logDt; }
+//    public LocalDateTime getLogDt() { return logDt; }
     public List<String> getRoles() { return roles; }
 }

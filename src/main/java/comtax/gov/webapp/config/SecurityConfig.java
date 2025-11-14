@@ -56,8 +56,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-//                    .requestMatchers("/actuator/health").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll()                 
                     .requestMatchers("/actuator/**").permitAll()
 //                    .requestMatchers("/actuator/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
@@ -70,11 +69,12 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "*"));
         configuration.setAllowedOriginPatterns(List.of("*")); // allow all origins safely
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // required for cookies
-        configuration.setExposedHeaders(List.of("Set-Cookie")); // expose Set-Cookie header
+        configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
