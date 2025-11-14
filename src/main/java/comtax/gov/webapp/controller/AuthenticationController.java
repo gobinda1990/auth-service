@@ -27,7 +27,6 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthenticationController {
 
 	private final AuthenticationManager authManager;
