@@ -21,6 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 import java.util.List;
 
 @Configuration
@@ -34,6 +36,9 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final AuthServiceDetails authServiceDetails;
 
+    /**
+     * Main Security Filter Chain
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring SecurityFilterChain");
@@ -55,34 +60,37 @@ public class SecurityConfig {
             })
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                    // Allow preflight requests
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    // Public endpoints
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll()                 
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
-//                    .requestMatchers("/actuator/**").hasRole("ADMIN")
+                    // All other endpoints require authentication
                     .anyRequest().authenticated())
+            // Add custom filters before username/password filter
             .addFilterBefore(loginRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    /**
+     * CORS Configuration Source
+     */
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-            "http://10.153.45.169:5174",
-            "http://10.153.36.161:5173",
-            "http://localhost:5173",
-            "http://localhost:5174"
+                "http://10.153.45.169:5174",
+                "http://10.153.43.8:8084",
+                "http://localhost:5173",
+                "http://localhost:5174"
         ));
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-
-        // MOST IMPORTANT
         configuration.setAllowCredentials(true);
-
         configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -91,7 +99,17 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Ensure CORS filter runs before other filters
+     */
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
+    }
 
+    /**
+     * Authentication Manager Bean
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -100,6 +118,9 @@ public class SecurityConfig {
         return authBuilder.build();
     }
 
+    /**
+     * Password Encoder Bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
