@@ -76,7 +76,7 @@ public class AuthenticationController {
 		
 
 		Optional<String> refreshTokenOpt = CookieUtil.getCookieValue(request, "refresh_token");
-		log.info("Refresh token request received::" + refreshTokenOpt);
+		//log.info("Refresh token request received::" + refreshTokenOpt);
 		if (refreshTokenOpt.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Missing refresh token", null));
