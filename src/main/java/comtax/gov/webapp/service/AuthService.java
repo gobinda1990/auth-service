@@ -19,8 +19,14 @@ public class AuthService {
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
         // Set refresh token cookie only (secure attributes enabled)
+//        CookieUtil.addCookie(response, "refresh_token", refreshToken,
+//                (int) (jwtService.getRefreshExpiration() / 1000), true, false, "None", null);
         CookieUtil.addCookie(response, "refresh_token", refreshToken,
-                (int) (jwtService.getRefreshExpiration() / 1000), true, false, "None", null);
+                (int) (jwtService.getRefreshExpiration() / 1000),
+                true,   // HttpOnly
+                true,   // Secure for HTTPS
+                "None", // Required for cross-site
+                null);  // Set domain if using subdomains
 
         // Return AuthResponse with access token in body (not stored in cookie)
         return new AuthResponse(userDetails.getHrmsCode(),userDetails.getFullName(),
